@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class Product with ChangeNotifier {
-  final String id;
+  final String? id;
   final String title;
   final String imageUrl;
   final String description;
@@ -65,7 +65,33 @@ class Products with ChangeNotifier {
     return _items.where((item) => item.isFavorite).toList();
   }
 
+  void updateProduct(String id, Product newProduct) {
+    final productIndex = _items.indexWhere((product) => product.id == id);
+    if (productIndex >= 0) {
+      _items[productIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('.....');
+    }
+  }
+
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        imageUrl: product.imageUrl,
+        description: product.description,
+        price: product.price);
+    _items.add(newProduct);
+    notifyListeners();
+  }
+
   Product findById(String id) {
     return _items.firstWhere((element) => element.id == id);
+  }
+
+  void deleteItem(String id) {
+    _items.removeWhere((product) => product.id == id);
+    notifyListeners();
   }
 }

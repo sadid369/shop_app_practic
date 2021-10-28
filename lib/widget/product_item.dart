@@ -34,7 +34,23 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             onPressed: () {
-              cartItem.addCartItem(products.id, products.price, products.title);
+              cartItem.addCartItem(products.id!, products.price, products.title);
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cartItem.singleItemRemove(products.id!);
+                    },
+                  ),
+                  duration: Duration(seconds: 2),
+                  content: Text(
+                    'item Added to Cart',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
             },
             icon: Icon(Icons.shopping_cart),
           ),

@@ -3,10 +3,12 @@ import 'package:shop_app_practic/provider/cart.dart';
 import 'package:shop_app_practic/provider/order.dart';
 import 'package:shop_app_practic/provider/products.dart';
 import 'package:shop_app_practic/screen/cart_screen.dart';
+import 'package:shop_app_practic/screen/edit_product_screen.dart';
 import 'package:shop_app_practic/screen/order_screen.dart';
 import 'package:shop_app_practic/screen/product_detail_screen.dart';
 import 'package:shop_app_practic/screen/product_overview_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app_practic/screen/user_product_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Shop App',
         theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrderScreen.routeName: (ctx) => OrderScreen(),
+          UserProductScreen.routeName: (ctx) => UserProductScreen(),
+          EditProductScreen.routeName: (ctx) => EditProductScreen(),
         },
       ),
     );

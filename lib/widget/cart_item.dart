@@ -21,6 +21,32 @@ class CartItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('it will remove the item?'),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop(false);
+                    },
+                    child: Text('no'),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop(true);
+                    },
+                    child: Text(
+                      'yes',
+                    ),
+                  )
+                ],
+              );
+            });
+      },
       background: Container(
         color: Theme.of(context).errorColor,
         padding: EdgeInsets.all(10),
