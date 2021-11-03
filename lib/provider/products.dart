@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Product with ChangeNotifier {
   final String? id;
@@ -75,15 +77,32 @@ class Products with ChangeNotifier {
     }
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        imageUrl: product.imageUrl,
-        description: product.description,
-        price: product.price);
-    _items.add(newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product product) async {
+    final url =
+        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+    await http
+        .post(Uri.parse(url),
+            body: json.encode({
+              'title': product.title,
+              'price': product.price,
+              'description': product.description,
+              'imageUrl': product.imageUrl,
+              'isFavorite': product.isFavorite
+            }))
+        .catchError((error) {
+      print(error);
+      throw error;
+    }).then((response) {
+      print(json.decode(response.body)['name']);
+      final newProduct = Product(
+          id: json.decode(response.body)['name'],
+          title: product.title,
+          imageUrl: product.imageUrl,
+          description: product.description,
+          price: product.price);
+      _items.add(newProduct);
+      notifyListeners();
+    });
   }
 
   Product findById(String id) {
