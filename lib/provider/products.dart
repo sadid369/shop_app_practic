@@ -79,7 +79,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url =
-        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products';
     await http
         .post(Uri.parse(url),
             body: json.encode({

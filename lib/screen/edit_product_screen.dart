@@ -21,7 +21,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _initialValue = {
     'title': '',
     'description': '',
-    'price': 0,
+    'price': '',
     'imageUrl': '',
   };
   @override
@@ -75,7 +75,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.didChangeDependencies();
   }
 
-  void _saveFrom() {
+  Future<void> _saveFrom() async {
     final isValid = fromKey.currentState!.validate();
     if (!isValid) {
       print(isValid);
@@ -93,10 +93,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .addProduct(_exitingProduct)
           .catchError((error) {
-        print(error);
+        return showDialog<Null>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text(error.toString()),
+                  content: Text('Error'),
+                  titleTextStyle: TextStyle(color: Colors.red, fontSize: 30),
+                  backgroundColor: Colors.amber,
+                  elevation: 10,
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Text('oK')),
+                  ],
+                ));
       }).then((_) {
         setState(() {
           _isLoading = false;
