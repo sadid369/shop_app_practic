@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shop_app_practic/model/http_exception.dart';
+
 class Product with ChangeNotifier {
   final String? id;
   final String title;
@@ -67,9 +69,18 @@ class Products with ChangeNotifier {
     return _items.where((item) => item.isFavorite).toList();
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final productIndex = _items.indexWhere((product) => product.id == id);
     if (productIndex >= 0) {
+      final url =
+          'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+      await http.patch(Uri.parse(url),
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+            'price': newProduct.price
+          }));
       _items[productIndex] = newProduct;
       notifyListeners();
     } else {
@@ -132,8 +143,25 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void deleteItem(String id) {
-    _items.removeWhere((product) => product.id == id);
+  Future<void> deleteItem(String id) async {
+    final url =
+        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    final _existingProductIndex =
+        _items.indexWhere((product) => product.id == id);
+    Product? _existingProduct = _items[_existingProductIndex];
+    _items.removeAt(_existingProductIndex);
     notifyListeners();
+    await http.delete(Uri.parse(url)).then((response) {
+      if (response.statusCode >= 400) {
+        print(response.statusCode);
+        throw HttpException(message: 'Error Occurred');
+      } else {
+        _existingProduct = null;
+      }
+    }).catchError((error) {
+      _items.insert(_existingProductIndex, _existingProduct!);
+      notifyListeners();
+      throw HttpException(message: 'Error Occurred');
+    });
   }
 }

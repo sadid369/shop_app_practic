@@ -11,6 +11,7 @@ class UserItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(
@@ -29,9 +30,13 @@ class UserItem extends StatelessWidget {
                   },
                   icon: Icon(Icons.edit)),
               IconButton(
-                  onPressed: () {
-                    Provider.of<Products>(context, listen: false)
-                        .deleteItem(id);
+                  onPressed: () async {
+                    await Provider.of<Products>(context, listen: false)
+                        .deleteItem(id)
+                        .catchError((error) {
+                      scaffold.showSnackBar(
+                          SnackBar(content: Text('Could not Delete')));
+                    });
                   },
                   icon: Icon(
                     Icons.delete,
