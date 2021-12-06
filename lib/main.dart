@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_app_practic/provider/cart.dart';
 import 'package:shop_app_practic/provider/order.dart';
 import 'package:shop_app_practic/provider/products.dart';
+import 'package:shop_app_practic/screen/auth_screen.dart';
+import 'package:shop_app_practic/screen/auth_screen_my_own.dart';
 import 'package:shop_app_practic/screen/cart_screen.dart';
 import 'package:shop_app_practic/screen/edit_product_screen.dart';
 import 'package:shop_app_practic/screen/order_screen.dart';
@@ -37,8 +39,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
         ),
+        home: AuthScreen2(),
         routes: {
-          '/': (ctx) => ProductOverviewScreen(),
+          ProductOverviewScreen.routeName: (ctx) => ProductOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrderScreen.routeName: (ctx) => OrderScreen(),

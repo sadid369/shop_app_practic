@@ -19,8 +19,28 @@ class Product with ChangeNotifier {
     required this.price,
     this.isFavorite = false,
   });
-  void toggleIsFavorite() {
+  void _setFavValue(bool newValue) {
+    isFavorite = newValue;
+    notifyListeners();
+  }
+
+  Future<void> toggleIsFavorite() async {
+    final oldStatus = isFavorite;
+    final url =
+        'https://shop-app-practic-2-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
     isFavorite = !isFavorite;
+    notifyListeners();
+    await http
+        .patch(Uri.parse(url), body: json.encode({'isFavorite': isFavorite}))
+        .then((response) {
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    }).catchError((error) {
+      print(error.toString());
+      _setFavValue(oldStatus);
+      throw error;
+    });
     notifyListeners();
   }
 }
@@ -73,7 +93,7 @@ class Products with ChangeNotifier {
     final productIndex = _items.indexWhere((product) => product.id == id);
     if (productIndex >= 0) {
       final url =
-          'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+          'https://shop-app-practic-2-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
       await http.patch(Uri.parse(url),
           body: json.encode({
             'title': newProduct.title,
@@ -90,10 +110,13 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetData() async {
     final url =
-        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+        'https://shop-app-practic-2-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
     http.get(Uri.parse(url)).then((response) {
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedData = [];
+      if (extractedData == null) {
+        return;
+      }
       extractedData.forEach((productID, prodyctData) {
         loadedData.add(Product(
             id: productID,
@@ -113,7 +136,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url =
-        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+        'https://shop-app-practic-2-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
     await http
         .post(Uri.parse(url),
             body: json.encode({
@@ -145,7 +168,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteItem(String id) async {
     final url =
-        'https://shop-app-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+        'https://shop-app-practic-2-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
     final _existingProductIndex =
         _items.indexWhere((product) => product.id == id);
     Product? _existingProduct = _items[_existingProductIndex];

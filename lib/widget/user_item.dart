@@ -35,7 +35,7 @@ class UserItem extends StatelessWidget {
                         .deleteItem(id)
                         .catchError((error) {
                       scaffold.showSnackBar(
-                          SnackBar(content: Text('Could not Delete')));
+                          SnackBar(content: Text(error.toString())));
                     });
                   },
                   icon: Icon(

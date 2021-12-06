@@ -28,13 +28,16 @@ class ProductItem extends StatelessWidget {
           leading: IconButton(
             icon: Icon(
                 products.isFavorite ? Icons.favorite : Icons.favorite_border),
-            onPressed: () {
-              products.toggleIsFavorite();
+            onPressed: () async {
+              await products.toggleIsFavorite().catchError((error) {
+                print(error.toString());
+              });
             },
           ),
           trailing: IconButton(
             onPressed: () {
-              cartItem.addCartItem(products.id!, products.price, products.title);
+              cartItem.addCartItem(
+                  products.id!, products.price, products.title);
               Scaffold.of(context).hideCurrentSnackBar();
               Scaffold.of(context).showSnackBar(
                 SnackBar(
